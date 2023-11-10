@@ -30,8 +30,9 @@ const Login = () => {
     return (
         <>
 
-            <form onSubmit={handleLogin}>
-                <label >Email</label>
+            <form className="container" onSubmit={handleLogin}>
+                <h1 className="m-2 p-2">Login</h1>
+                <label className="mx-2 p-2">Email</label>
                 <input
                     type="text"
                     placeholder="E-mail"
@@ -40,7 +41,7 @@ const Login = () => {
                     value={user.email}
                     onChange={handleChange}
                 />
-                <label >Password</label>
+                <label className="mx-2 p-2" >Password</label>
                 <input
                     type="password"
                     placeholder="Password"
@@ -49,7 +50,7 @@ const Login = () => {
                     value={user.password}
                     onChange={handleChange}
                 />
-                <button>Login</button>
+                <button className="m-2">Login</button>
 
 
             </form>

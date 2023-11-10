@@ -5,6 +5,8 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+ 
 
 
 api = Blueprint('api', __name__)
@@ -39,7 +41,7 @@ def register_user():
     if user is not None:
         return jsonify({"message":"The user already exists"}), 400
     else:
-        password=set_password(password)
+       # password=set_password(password)
         user = User(email=email, password=password, is_active=is_active)
 
         db.session.add(user)
@@ -50,4 +52,38 @@ def register_user():
         except Exception as error:
             db.session.rollback()
             return jsonify({"message":f'{error}'}), 400
+
+
+
+#ruta para hacer login en la cuenta
+
+@api.route('/login', methods=['POST'] )
+def handle_login():
+    body = request.json
+    email = body.get("email")
+    password= body.get("password")
+
+    if email is None or password is None:
+        return jsonify({"message":"You need to provide an email and a password"}), 400 
+    else:
+        user = User.query.filter_by(email=email).one_or_none()
+        if user is None:
+            return jsonify({"message":"Login not possible the first"}), 400
+        else:
+            if check_password(user.password, password):
+                token = create_access_token(identity = {"user_id":user.id})
+                return jsonify({"token": token}), 200
+            else:
+                return jsonify({"message":"Login not possible"}), 400
+            
+
+@api.route ('/private', methods=['GET'])
+@jwt_required()
+def get_users_info():
+    token_identity= get_jwt_identity
+    if token_identity.get("rol") == "admin":
+
+        users = User.query.all()
+        return jsonify(list(map(lambda item : item.serialize(), users)))
+
 
