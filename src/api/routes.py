@@ -26,12 +26,12 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
-@api.route('/user', methods=["POST"])
+@api.route('/signup', methods=["POST"])
 def register_user():
     body = request.json
     email = body.get("email")
     password = body.get("password")
-    is_active = body.get("is_active")
+   
 
     if email is None or password is None:
         return jsonify({"message":"You need to provide an email and a password"}), 400
@@ -41,8 +41,8 @@ def register_user():
     if user is not None:
         return jsonify({"message":"The user already exists"}), 400
     else:
-       # password=set_password(password)
-        user = User(email=email, password=password, is_active=is_active)
+        password=set_password(password)
+        user = User(email=email, password=password)
 
         db.session.add(user)
 
@@ -72,18 +72,18 @@ def handle_login():
         else:
             if check_password(user.password, password):
                 token = create_access_token(identity = {"user_id":user.id})
+                print(token)
                 return jsonify({"token": token}), 200
             else:
-                return jsonify({"message":"Login not possible"}), 400
+                return jsonify({"message":"Login not possible the second"}), 400
             
 
 @api.route ('/private', methods=['GET'])
 @jwt_required()
 def get_users_info():
-    token_identity= get_jwt_identity
-    if token_identity.get("rol") == "admin":
-
-        users = User.query.all()
-        return jsonify(list(map(lambda item : item.serialize(), users)))
+    # token_identity= get_jwt_identity
+    # if token_identity.get("role") == "admin":
+    users = User.query.all()
+    return jsonify(list(map(lambda item : item.serialize(), users)))
 
 

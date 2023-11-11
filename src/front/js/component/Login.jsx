@@ -1,9 +1,12 @@
 import React, { useState, useContext } from "react"
 import { Context } from "../store/appContext"
+import { Navigate, useNavigate } from "react-router-dom"
 
 
 
 const Login = () => {
+    
+    const navigate = useNavigate()
     const { actions } = useContext(Context)
 
     const [user, setUser] = useState({
@@ -23,7 +26,12 @@ const Login = () => {
 
     const handleLogin = async (event) => {
         event.preventDefault()
-        //let result = await actions.login(user)
+        let result = await actions.login(user)
+        console.log(result)
+        if (result) (
+            navigate("/private")
+        )
+
 
     }
 
