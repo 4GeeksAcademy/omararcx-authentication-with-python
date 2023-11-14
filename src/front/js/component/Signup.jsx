@@ -59,18 +59,14 @@ const Signup = () => {
                 />
 
                 <label >Rol</label>
-                <input
-                    type="text"
-                    placeholder="Rol Asignado"
-                    className="form-control"
-                    name="role"
-                    value={user.role}
-                    onChange={handleChange}
-                />
+                <select className="form-select" >
+                    <option selected>Seleccion el rol asignado</option>
+                    <option value="1">Admin</option>
+                    <option value="2">General</option>
+                    <option value="3">Guest</option>
+                </select>
 
                 <button className="m-2">Sign Up</button>
-
-
             </form>
 
 
